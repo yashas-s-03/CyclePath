@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyclePath - Premium Bike Rentals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        [data-theme="dark"] {
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-tertiary: #374151;
+            --border-color: #4b5563;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            transition: var(--transition);
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+        [data-theme="dark"] .header {
+            background: rgba(17, 24, 39, 0.95);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            position: relative;
+        }
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+        }
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary-color);
+            transform: rotate(180deg);
+        }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.1)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+            background-size: cover;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .hero .tagline {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .cta-button {
+            background: var(--accent-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .main {
+            padding-top: 70px;
+        }
+        .section {
+            padding: 5rem 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .bikes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .bike-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+        .bike-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+        .bike-image {
+            height: 200px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+        }
+        .bike-content {
+            padding: 1.5rem;
+        }
+        .bike-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .bike-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .bike-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .bike-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-tag {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+        .rent-button {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .rent-button:hover {
+            background: var(--primary-dark);
+        }
+        .pricing {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"><rect fill="%23e5e7eb" width="1000" height="600"/><circle fill="%23d1d5db" cx="200" cy="150" r="80"/><circle fill="%23d1d5db" cx="800" cy="450" r="60"/><rect fill="%239ca3af" x="100" y="300" width="800" height="4" rx="2"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            position: relative;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .pricing-card.featured {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+        .pricing-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+        .pricing-period {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .pricing-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .booking {
+            background: var(--bg-secondary);
+        }
+        .booking-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .success-message {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .contact {
+            background: var(--bg-primary);
+        }
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--bg-primary);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 2rem;
+                transition: var(--transition);
+                border-top: 1px solid var(--border-color);
+            }
+            .nav-menu.active {
+                left: 0;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .nav-container {
+                padding: 0 1rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .bikes-grid {
+                grid-template-columns: 1fr;
+            }
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">🚴 CyclePath</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+                <li><a href="#bikes" class="nav-link" data-section="bikes">Bikes</a></li>
+                <li><a href="#pricing" class="nav-link" data-section="pricing">Pricing</a></li>
+                <li><a href="#booking" class="nav-link" data-section="booking">Book Now</a></li>
+                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="themeToggle">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button class="mobile-toggle" id="mobileToggle">☰</button>
+            </div>
+        </nav>
+    </header>
+    <main class="main">
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>CyclePath Rentals</h1>
+                <p class="tagline">Explore the world on two wheels with our premium bike collection</p>
+                <a href="#bikes" class="cta-button">Explore Bikes</a>
+            </div>
+        </section>
+        <section id="bikes" class="section">
+            <div class="container">
+                <h2 class="section-title">Our Bike Collection</h2>
+                <div class="bikes-grid" id="bikesGrid"></div>
+            </div>
+        </section>
+        <section id="pricing" class="section pricing">
+            <div class="container">
+                <h2 class="section-title">Pricing Plans</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3 class="pricing-title">Hourly</h3>
+                        <div class="pricing-price">$8</div>
+                        <div class="pricing-period">per hour</div>
+                        <ul class="pricing-features">
+                            <li>Basic helmet included</li>
+                            <li>City map provided</li>
+                            <li>24/7 support</li>
+                            <li>Flexible return</li>
+                        </ul>
+                        <button class="cta-button">Choose Plan</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <h3 class="pricing-title">Daily</h3>
+                        <div class="pricing-price">$25</div>
+                        <div class="pricing-period">per day</div>
+                        <ul class="pricing-features">
+                            <li>Premium helmet & gear</li>
+                            <li>GPS navigation</li>
+                            <li>Insurance included</li>
+                            <li>Free maintenance</li>
+                            <li>Route recommendations</li>
+                        </ul>
+                        <button class="cta-button">Choose Plan</button>
+                    </div>
+                    <div class="pricing-card">
+                        <h3 class="pricing-title">Weekly</h3>
+                        <div class="pricing-price">$120</div>
+                        <div class="pricing-period">per week</div>
+                        <ul class="pricing-features">
+                            <li>All daily features</li>
+                            <li>Bike storage service</li>
+                            <li>Maintenance included</li>
+                            <li>Unlimited exchanges</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button class="cta-button">Choose Plan</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="booking" class="section booking">
+            <div class="container">
+                <h2 class="section-title">Quick Booking</h2>
+                <form class="booking-form" id="bookingForm">
+                    <div class="form-group">
+                        <label for="customerName" class="form-label">Full Name *</label>
+                        <input type="text" id="customerName" class="form-input" required>
+                        <div class="error-message" id="nameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" id="email" class="form-input" required>
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" id="phone" class="form-input" required>
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bikeType" class="form-label">Bike Type *</label>
+                            <select id="bikeType" class="form-select" required>
+                                <option value="">Select a bike</option>
+                            </select>
+                            <div class="error-message" id="bikeError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration" class="form-label">Duration *</label>
+                            <select id="duration" class="form-select" required>
+                                <option value="">Select duration</option>
+                                <option value="hourly">Hourly - $8/hr</option>
+                                <option value="daily">Daily - $25/day</option>
+                                <option value="weekly">Weekly - $120/week</option>
+                            </select>
+                            <div class="error-message" id="durationError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate" class="form-label">Start Date *</label>
+                            <input type="date" id="startDate" class="form-input" required>
+                            <div class="error-message" id="startDateError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime" class="form-label">Start Time *</label>
+                            <input type="time" id="startTime" class="form-input" required>
+                            <div class="error-message" id="startTimeError"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 1rem;">Book Now</button>
+                    <div class="success-message" id="successMessage" style="text-align: center; margin-top: 1rem;"></div>
+                </form>
+            </div>
+        </section>
+        <section id="contact" class="section contact">
+            <div class="container">
+                <h2 class="section-title">Get in Touch</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Contact Information</h3>
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div><strong>Address:</strong><br>123 Bike Street, Cycling City, CC 12345</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div><strong>Phone:</strong><br>+1 (555) 123-BIKE</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">✉️</div>
+                            <div><strong>Email:</strong><br>info@cyclepath.com</div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">🕒</div>
+                            <div><strong>Hours:</strong><br>Mon-Sun: 7:00 AM - 8:00 PM</div>
+                        </div>
+                    </div>
+                    <div class="contact-map">
+                        <h3>Find Us</h3>
+                        <div style="background: var(--bg-tertiary); height: 300px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color); color: var(--text-secondary);">
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">🗺️</div>
+                                <p>Interactive Map</p>
+                                <p style="font-size: 0.9rem; opacity: 0.7;">Located in the heart of the city</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CyclePath Rentals. All rights reserved. | Built with passion for cycling enthusiasts.</p>
+        </div>
+    </footer>
+    <script>
+        const bikes = [
+            {id: 1, name: "City Cruiser", description: "Perfect for leisurely rides through the city streets and parks.", price: "$8/hour", features: ["Comfortable seat", "Built-in basket", "LED lights"], icon: "🚲"},
+            {id: 2, name: "Mountain Explorer", description: "Built for adventure seekers and off-road enthusiasts.", price: "$12/hour", features: ["All-terrain tires", "Shock absorption", "Water bottle holder"], icon: "🚵"},
+            {id: 3, name: "Electric Boost", description: "Eco-friendly electric bike for effortless longer distances.", price: "$15/hour", features: ["Electric motor", "50km range", "Fast charging"], icon: "⚡"},
+            {id: 4, name: "Speed Demon", description: "Lightweight racing bike for speed enthusiasts.", price: "$10/hour", features: ["Carbon frame", "Racing tires", "Aerodynamic design"], icon: "🏎️"},
+            {id: 5, name: "Family Tandem", description: "Double the fun with our tandem bike for two riders.", price: "$18/hour", features: ["Two seats", "Synchronized pedaling", "Extra stability"], icon: "👫"},
+            {id: 6, name: "Vintage Classic", description: "Stylish retro bike with modern safety features.", price: "$9/hour", features: ["Vintage style", "Modern brakes", "Leather seat"], icon: "🎩"}
+        ];
+        const bikesGrid = document.getElementById('bikesGrid');
+        const bikeTypeSelect = document.getElementById('bikeType');
+        const bookingForm = document.getElementById('bookingForm');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navMenu = document.getElementById('navMenu');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        function init() {
+            generateBikeListings();
+            populateBikeSelect();
+            setupNavigation();
+            setupThemeToggle();
+            setupMobileMenu();
+            setupBookingForm();
+            setMinDate();
+            loadSavedTheme();
+        }
+        function generateBikeListings() {
+            bikesGrid.innerHTML = bikes.map(bike => `
+                <div class="bike-card">
+                    <div class="bike-image"><span>${bike.icon}</span></div>
+                    <div class="bike-content">
+                        <h3 class="bike-name">${bike.name}</h3>
+                        <p class="bike-description">${bike.description}</p>
+                        <div class="bike-price">${bike.price}</div>
+                        <div class="bike-features">${bike.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}</div>
+                        <button class="rent-button" onclick="selectBike('${bike.name}')">Rent Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        function populateBikeSelect() {
+            bikes.forEach(bike => {
+                const option = document.createElement('option');
+                option.value = bike.name;
+                option.textContent = bike.name;
+                bikeTypeSelect.appendChild(option);
+            });
+        }
+        function selectBike(bikeName) {
+            bikeTypeSelect.value = bikeName;
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('bikeError').textContent = '';
+        }
+        function setupNavigation() {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    const sectionId = link.getAttribute('data-section');
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    navMenu.classList.remove('active');
+                });
+            });
+            window.addEventListener('scroll', updateActiveNav);
+        }
+        function updateActiveNav() {
+            const sections = ['home', 'bikes', 'pricing', 'booking', 'contact'];
+            const scrollPosition = window.scrollY + 100;
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                const navLink = document.querySelector(`[data-section="${sectionId}"]`);
+                if (section && navLink) {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        navLink.classList.add('active');
+                    }
+                }
+            });
+        }
+        function setupMobileMenu() {
+            mobileToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+            document.addEventListener('click', (e) => {
+                if (!navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
+            });
+        }
+        function setupThemeToggle() {
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                localStorage.setItem('cyclepath-theme', newTheme);
+            });
+        }
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('cyclepath-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+        function setMinDate() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const minDate = tomorrow.toISOString().split('T')[0];
+            document.getElementById('startDate').setAttribute('min', minDate);
+        }
+        function validateName(name) {
+            if (!name || name.trim().length < 2) {
+                return "Please enter a valid name (at least 2 characters)";
+            }
+            return "";
+        }
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                return "Please enter a valid email address";
+            }
+            return "";
+        }
+        function validatePhone(phone) {
+            const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+            if (!phone || !phoneRegex.test(phone)) {
+                return "Please enter a valid phone number";
+            }
+            return "";
+        }
+        function validateDate(date) {
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (!date || selectedDate <= today) {
+                return "Please select a future date";
+            }
+            return "";
+        }
+        function validateTime(time) {
+            if (!time) {
+                return "Please select a time";
+            }
+            return "";
+        }
+        function setupBookingForm() {
+            const inputs = bookingForm.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => validateField(input));
+                input.addEventListener('input', () => clearError(input));
+            });
+            bookingForm.addEventListener('submit', handleBookingSubmit);
+        }
+        function validateField(field) {
+            const fieldId = field.id;
+            const value = field.value.trim();
+            let errorMessage = "";
+            switch(fieldId) {
+                case 'customerName':
+                    errorMessage = validateName(value);
+                    break;
+                case 'email':
+                    errorMessage = validateEmail(value);
+                    break;
+                case 'phone':
+                    errorMessage = validatePhone(value);
+                    break;
+                case 'startDate':
+                    errorMessage = validateDate(value);
+                    break;
+                case 'startTime':
+                    errorMessage = validateTime(value);
+                    break;
+                case 'bikeType':
+                    if (!value) errorMessage = "Please select a bike type";
+                    break;
+                case 'duration':
+                    if (!value) errorMessage = "Please select a duration";
+                    break;
+            }
+            const errorElement = document.getElementById(fieldId.replace(/([A-Z])/g, '$1').toLowerCase().replace(/^(.)/, (match) => match.toLowerCase()) + 'Error');
+            if (errorElement) {
+                errorElement.textContent = errorMessage;
+            }
+            return errorMessage === "";
+        }
+        function clearError(field) {
+            const fieldId = field.id;
+            const errorElement = document.getElementById(fieldId.replace(/([A-Z])/g, '$1').toLowerCase().replace(/^(.)/, (match) => match.toLowerCase()) + 'Error');
+            if (errorElement && errorElement.textContent) {
+                errorElement.textContent = "";
+            }
+        }
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            document.getElementById('successMessage').textContent = '';
+            const formData = {
+                name: document.getElementById('customerName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                bikeType: document.getElementById('bikeType').value,
+                duration: document.getElementById('duration').value,
+                startDate: document.getElementById('startDate').value,
+                startTime: document.getElementById('startTime').value
+            };
+            const fields = ['customerName', 'email', 'phone', 'bikeType', 'duration', 'startDate', 'startTime'];
+            let isValid = true;
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+            if (isValid) {
+                let bookings = JSON.parse(localStorage.getItem('cyclepath-bookings') || '[]');
+                const booking = {
+                    id: Date.now(),
+                    ...formData,
+                    timestamp: new Date().toISOString()
+                };
+                bookings.push(booking);
+                localStorage.setItem('cyclepath-bookings', JSON.stringify(bookings));
+                document.getElementById('successMessage').textContent = `Booking confirmed! Your ${formData.bikeType} is reserved for ${formData.startDate} at ${formData.startTime}. Booking ID: ${booking.id}`;
+                bookingForm.reset();
+                document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.bike-card, .pricing-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
